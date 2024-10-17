@@ -14,17 +14,28 @@ sizes.addEventListener('change', (e) => {
     generateQrCode(); // Pass the selected size to the generateQrCode function
 });
 
-downloadBtn.addEventListener('click', ()=>{
+downloadBtn.addEventListener('click', () => {
     let img = document.querySelector('.qr-body img');
 
-    if(img !== null){
+    if (img !== null) {
         let imgAtrr = img.getAttribute('src');
         downloadBtn.setAttribute("href", imgAtrr);
-    }
-    else{
-        downloadBtn.setAttribute("href", `${document.querySelector('canvas').toDataURL()}`);
+        downloadBtn.setAttribute("download", "qr-code.png"); // Set download attribute
+    } else {
+        let canvas = document.querySelector('canvas');
+
+        if (canvas) {
+            canvas.toBlob((blob) => {
+                let url = URL.createObjectURL(blob);
+                downloadBtn.setAttribute("href", url);
+                downloadBtn.setAttribute("download", "qr-code.png"); // Set download attribute
+                downloadBtn.click(); // Programmatically trigger click to download
+                URL.revokeObjectURL(url); // Clean up URL object after download
+            });
+        }
     }
 });
+
 
 function isEmptyInput(){
     // if(qrText.value.length > 0){
